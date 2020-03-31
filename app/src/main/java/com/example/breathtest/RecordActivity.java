@@ -483,7 +483,7 @@ public class RecordActivity extends AppCompatActivity {
         File mergedFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
                 "/breath_recorded.mp3");
 //        mergeAudio(files);
-        mergeSongs(mergedFile,files);
+        ///mergeSongs(mergedFile,files);
 
         inhaleBird.setVisibility(View.INVISIBLE);
         breathCircle.setVisibility(View.INVISIBLE);
@@ -492,6 +492,14 @@ public class RecordActivity extends AppCompatActivity {
         breathCircleText.startAnimation(animFadeIn);
         breathCircleText.setTextColor(Color.parseColor("#008577"));
         customView.setVisibility(View.INVISIBLE);
+
+        if (isRecording)
+        {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            isRecording = false;
+        }
 
         cTimer = new CountDownTimer(4000, 1000) {
             public void onTick(long millisUntilFinished) {

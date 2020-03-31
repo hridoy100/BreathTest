@@ -1,6 +1,7 @@
 package com.example.breathtest;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -18,8 +19,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,13 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
     Thread t;
 
+    ObjectAnimator progressBarAnimator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
-
+        progressBarAnimator = ObjectAnimator.ofInt(progress_bar, "progress", 0, 100);
+        progressBarAnimator.setDuration(24200);
         audioSetup();
     }
 
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private MediaObserver observer = null;
+    /*private MediaObserver observer = null;
 
     private class MediaObserver implements Runnable {
         private AtomicBoolean stop = new AtomicBoolean(false);
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-    }
+    }*/
 
 
     public void start_recording(View view){
@@ -127,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
     public void play_sound(View view) {
         System.out.println("play_sound: "+audioFilePath);
         progress_bar.setProgress(0);
+        progressBarAnimator.start();
         configureMediaPlayer();
-        observer = new MediaObserver();
+        ////observer = new MediaObserver();
         try {
             mediaPlayer.setDataSource(audioFilePath);
             mediaPlayer.prepare();
@@ -146,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
             progress_bar.setVisibility(View.VISIBLE);
 
             mediaPlayer.start();
-            t = new Thread(observer);
-            t.start();
+            ////t = new Thread(observer);
+            ////t.start();
 
             Toast.makeText(getApplicationContext(), "Time: "+mediaPlayer.getDuration(), Toast.LENGTH_LONG).show();
 
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             isRecording = false;
         } else {
 
-            observer.stop();
+            ////observer.stop();
 //            mediaPlayer.release();
 //            mediaPlayer = null;
             mediaPlayer.stop();
@@ -301,8 +304,8 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                observer.stop();
-                progress_bar.setProgress(mp.getCurrentPosition());
+                ////observer.stop();
+                /////progress_bar.setProgress(mp.getCurrentPosition());
                 // TODO Auto-generated method stub
                 mediaPlayer.stop();
                 mediaPlayer.reset();
@@ -323,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     playingRecordNo=2;
+                    progress_bar.setProgress(0);
                 }
 
             }
@@ -348,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
     public void playRecord() {
         progress_bar.setProgress(0);
         configureMediaPlayer();
-        observer = new MediaObserver();
+        ////observer = new MediaObserver();
         audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
                 "/breath_record"+playingRecordNo+".mp3";
         System.out.println("play_sound path: "+audioFilePath);
@@ -370,8 +374,8 @@ public class MainActivity extends AppCompatActivity {
             progress_bar.setVisibility(View.VISIBLE);
 
             mediaPlayer.start();
-            t = new Thread(observer);
-            t.start();
+            ////t = new Thread(observer);
+            ////t.start();
 
             Toast.makeText(getApplicationContext(), "Time: "+mediaPlayer.getDuration(), Toast.LENGTH_LONG).show();
 
