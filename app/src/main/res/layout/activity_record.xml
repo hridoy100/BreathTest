@@ -40,16 +40,27 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="50dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             >
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/breath1"
-                android:id="@+id/breath_img"
-                android:visibility="invisible"
-                android:layout_marginLeft="10dp"
-                />
+            <RelativeLayout
+                android:layout_width="305dp"
+                android:layout_height="305dp"
+                android:gravity="center"
+                android:id="@+id/circleView"
+                >
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/circle"
+                    android:background="@drawable/circle_ring"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:id="@+id/breath_img"
+                    android:visibility="invisible"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerInParent="true"
+                    />
+            </RelativeLayout>
+
         </LinearLayout>
 
         <RelativeLayout
@@ -84,11 +95,33 @@
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:indeterminateDrawable="@drawable/progress_bar_drawable"
                     android:id="@+id/inhale_exhale_bar"
-                    android:visibility="visible"
+                    android:visibility="invisible"
                     android:indeterminate="true"
                     android:indeterminateDuration="4000"
                     android:layout_below="@id/inhale_exhale_text"
                     />
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/left_to_right_bird"
+                    android:id="@+id/bird"
+                    android:indeterminate="true"
+                    android:indeterminateDuration="4000"
+                    android:visibility="invisible"
+                    />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="থামুন"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:id="@+id/breath_text_circle"
+                android:layout_below="@+id/inhale_exhale_text"
+                />
+
+
         </RelativeLayout>
 
 

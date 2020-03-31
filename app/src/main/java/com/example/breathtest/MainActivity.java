@@ -1,9 +1,5 @@
 package com.example.breathtest;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,11 +15,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     TextView playButton;
     Button submitButton;
     TextView stopButton;
+
+    int playingRecordNo=2;
 
     LinearLayout stopButtonLayout;
     LinearLayout playButtonLayout;
@@ -127,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void play_sound(View view) {
-        System.out.println("play_sound: "+"pressed");
+        System.out.println("play_sound: "+audioFilePath);
         progress_bar.setProgress(0);
         configureMediaPlayer();
         observer = new MediaObserver();
@@ -150,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
             mediaPlayer.start();
             t = new Thread(observer);
             t.start();
+
+            Toast.makeText(getApplicationContext(), "Time: "+mediaPlayer.getDuration(), Toast.LENGTH_LONG).show();
 
         }
         catch (Exception e){
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
-                "/on_my_way.mp3";
+                "/breath_record1.mp3";
         Log.d("audioSetup", audioFilePath);
 
         int result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -318,6 +318,13 @@ public class MainActivity extends AppCompatActivity {
                 progress_bar.setVisibility(View.INVISIBLE);
 
                 recordButton.setEnabled(true);
+                if(playingRecordNo<=6){
+                    playRecord();
+                }
+                else{
+                    playingRecordNo=2;
+                }
+
             }
         });
         mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
@@ -334,8 +341,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
+//                "/breath_record1.mp3";
+    }
+
+    public void playRecord() {
+        progress_bar.setProgress(0);
+        configureMediaPlayer();
+        observer = new MediaObserver();
         audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
-                "/on_my_way.mp3";
+                "/breath_record"+playingRecordNo+".mp3";
+        System.out.println("play_sound path: "+audioFilePath);
+        playingRecordNo++;
+        try {
+            mediaPlayer.setDataSource(audioFilePath);
+            mediaPlayer.prepare();
+
+            playButton.setEnabled(false);
+            recordButton.setEnabled(false);
+            stopButton.setEnabled(true);
+
+            playButtonLayout.setClickable(false);
+            playButtonLayout.setVisibility(View.INVISIBLE);
+
+            stopButtonLayout.setVisibility(View.VISIBLE);
+            stopButtonLayout.setClickable(true);
+
+            progress_bar.setVisibility(View.VISIBLE);
+
+            mediaPlayer.start();
+            t = new Thread(observer);
+            t.start();
+
+            Toast.makeText(getApplicationContext(), "Time: "+mediaPlayer.getDuration(), Toast.LENGTH_LONG).show();
+
+        }
+        catch (Exception e){
+            mediaPlayer.stop();
+            e.printStackTrace();
+        }
+
+
+
     }
 
 }
