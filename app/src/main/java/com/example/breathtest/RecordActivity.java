@@ -40,6 +40,8 @@ public class RecordActivity extends AppCompatActivity {
     int circleRadius = 300;
     int countColor = 0;
 
+    int totalData = 1;
+
     private MediaRecorder mediaRecorder;
 
     ImageView breathCircle;
@@ -177,6 +179,9 @@ public class RecordActivity extends AppCompatActivity {
                 customView.setVisibility(View.VISIBLE);
                 customView.updateView(circleRadius);
                 breathCircle.setVisibility(View.VISIBLE);
+
+                
+
                 play_inhale();
 
                 /*progressBarAnimation.setVisibility(View.VISIBLE);
@@ -567,6 +572,7 @@ public class RecordActivity extends AppCompatActivity {
         super.onBackPressed();
         if(isRecording){
             mediaRecorder.stop();
+            cTimer.cancel();
         }
         else if(mediaPlayer!=null && mediaPlayer.isPlaying()){
             mediaPlayer.stop();

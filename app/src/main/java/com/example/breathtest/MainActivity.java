@@ -20,6 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
 
     Button recordButton;
@@ -56,14 +61,48 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBarAnimator = ObjectAnimator.ofInt(progress_bar, "progress", 0, 100);
-        progressBarAnimator.setDuration(24200);
+        progressBarAnimator.setDuration(23000);
         audioSetup();
+        storeAudioFiles("inhale",1);
+        storeAudioFiles("exhale",2);
+        recordButton.setEnabled(true);
+    }
+
+    void storeAudioFiles(String fileName, int in_ex){
+        try {
+            InputStream ins;
+            if(in_ex==1) {
+                ins = getResources().openRawResource(R.raw.inhale);
+            }
+            else {
+                ins = getResources().openRawResource(R.raw.exhale);
+            }
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            int size = 0;
+// Read the entire resource into a local byte buffer.
+            byte[] buffer = new byte[1024];
+            while ((size = ins.read(buffer, 0, 1024)) >= 0) {
+                outputStream.write(buffer, 0, size);
+            }
+            ins.close();
+            buffer = outputStream.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+ "/"+fileName+".aac");
+            fos.write(buffer);
+            fos.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer.stop();
+        if(mediaPlayer!=null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
     }
 
 
@@ -127,6 +166,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void play_sound(View view) {
+
+        File exists = new File(audioFilePath);
+        if(!exists.exists()){
+            Toast.makeText(getApplicationContext(), "File Not Found", Toast.LENGTH_LONG).show();
+//            try {
+//                Files.createDirectories(Paths.get(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC))));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+            return;
+        }
+
         System.out.println("play_sound: "+audioFilePath);
         progress_bar.setProgress(0);
         progressBarAnimator.start();
@@ -272,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                         || grantResults[0] !=
                         PackageManager.PERMISSION_GRANTED) {
 
-                    recordButton.setEnabled(false);
+                    recordButton.setEnabled(true);
 
                     Toast.makeText(this,
                             "Record permission required",
@@ -289,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length == 0
                         || grantResults[0] !=
                         PackageManager.PERMISSION_GRANTED) {
-                    recordButton.setEnabled(false);
+                    recordButton.setEnabled(true);
                     Toast.makeText(this,
                             "External Storage permission required",
                             Toast.LENGTH_LONG).show();
