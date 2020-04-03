@@ -115,7 +115,7 @@
                 android:layout_centerInParent="true"
                 android:text="থামুন"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 android:id="@+id/breath_text_circle"
                 android:layout_below="@+id/inhale_exhale_text"

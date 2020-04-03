@@ -2,6 +2,8 @@ package com.example.breathtest;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -24,6 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,18 +58,23 @@ public class MainActivity extends AppCompatActivity {
     Thread t;
 
     ObjectAnimator progressBarAnimator;
-
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        builder = new AlertDialog.Builder(this);
         progress_bar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBarAnimator = ObjectAnimator.ofInt(progress_bar, "progress", 0, 100);
         progressBarAnimator.setDuration(23000);
         audioSetup();
         storeAudioFiles("inhale",1);
         storeAudioFiles("exhale",2);
+        storeAudioFiles("ready",3);
+        storeAudioFiles("hold_breath",4);
+        storeAudioFiles("calm_down",5);
+
         recordButton.setEnabled(true);
     }
 
@@ -74,8 +84,17 @@ public class MainActivity extends AppCompatActivity {
             if(in_ex==1) {
                 ins = getResources().openRawResource(R.raw.inhale);
             }
-            else {
+            else if(in_ex==2){
                 ins = getResources().openRawResource(R.raw.exhale);
+            }
+            else if(in_ex==3) {
+                ins = getResources().openRawResource(R.raw.ready);
+            }
+            else if(in_ex==4) {
+                ins = getResources().openRawResource(R.raw.hold_breath);
+            }
+            else {
+                ins = getResources().openRawResource(R.raw.calm_down);
             }
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             int size = 0;
@@ -246,6 +265,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void submit(View view){
+
+        final File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        if(dir.exists()){
+            builder.setTitle("Save Files?");
+            builder.setMessage("Your records will be saved to location \'"+Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+"\'");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String currentTime = new SimpleDateFormat("mm:HH:ss", Locale.getDefault()).format(new Date());
+                    int k=1;
+                    for(int i=1; i<7; i++){
+                        File from = new File(dir,"breath_record"+i+".mp3");
+                        File to;
+                        if(i%2!=0) {
+                            to = new File(dir, currentTime + "_BI_"+ k + ".mp3");
+                        }
+                        else {
+                            to = new File(dir, currentTime + "_BO_"+ k + ".mp3");
+                            k++;
+                        }
+                        if(from.exists()) {
+                            from.renameTo(to);
+                        }
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing..
+                }
+            });
+            builder.show();
+        }
 
     }
 

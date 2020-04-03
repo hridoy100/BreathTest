@@ -180,10 +180,10 @@ public class RecordActivity extends AppCompatActivity {
                 customView.updateView(circleRadius);
                 breathCircle.setVisibility(View.VISIBLE);
 
-                
 
-                play_inhale();
 
+//                play_inhale();
+                play_ready();
                 /*progressBarAnimation.setVisibility(View.VISIBLE);
                 inhale_exhale.startAnimation(animFadeOut);
                 breathImage.setVisibility(View.VISIBLE);
@@ -197,6 +197,63 @@ public class RecordActivity extends AppCompatActivity {
         cTimer.start();
     }
 
+
+    void play_ready(){
+        try {
+            mediaPlayer.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+ "/ready.aac");
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            inhaleBird.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(R.drawable.left_to_right_bird)
+                    .into(inhaleBird);
+
+            breathCircleText.setText("ready?");
+        }
+        catch (Exception e){
+            mediaPlayer.stop();
+            e.printStackTrace();
+        }
+    }
+
+    void play_hold_breath() {
+        try {
+            mediaPlayer.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+ "/hold_breath.aac");
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            inhaleBird.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(R.drawable.right_to_keft_bird)
+                    .into(inhaleBird);
+
+            breathCircleText.setText("শ্বাস ধরে রাখুন");
+        }
+        catch (Exception e){
+            mediaPlayer.stop();
+            e.printStackTrace();
+        }
+    }
+
+    void play_calm_down() {
+        try {
+            mediaPlayer.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+ "/calm_down.aac");
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            inhaleBird.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(R.drawable.left_to_right_bird)
+                    .into(inhaleBird);
+
+            breathCircleText.setText("স্বাভাবিক হোন");
+        }
+        catch (Exception e){
+            mediaPlayer.stop();
+            e.printStackTrace();
+        }
+        totalData++;
+    }
+
+
     void play_inhale(){
         try {
             mediaPlayer.setDataSource(inhaleTonePath);
@@ -208,6 +265,7 @@ public class RecordActivity extends AppCompatActivity {
                     .into(inhaleBird);
 
             breathCircleText.setText("থামুন");
+
 //            customView.updateView(circleRadius);
 //            breathCircle.setVisibility(View.VISIBLE);
         }
@@ -215,6 +273,7 @@ public class RecordActivity extends AppCompatActivity {
             mediaPlayer.stop();
             e.printStackTrace();
         }
+//        inhale_exhale_count++;
     }
 
     void play_exhale(){
@@ -227,13 +286,14 @@ public class RecordActivity extends AppCompatActivity {
                     .load(R.drawable.right_to_keft_bird)
                     .into(inhaleBird);
 
-            breathCircleText.setText("থামুন");
+            breathCircleText.setText("শ্বাস ধরে রাখুন");
 //            customView.updateView(circleRadius);
         }
         catch (Exception e){
             mediaPlayer.stop();
             e.printStackTrace();
         }
+//        inhale_exhale_count++;
     }
 
     void animateBirdLtR(){
@@ -243,14 +303,15 @@ public class RecordActivity extends AppCompatActivity {
                 .into(inhaleBird);
         birdAnimator = ObjectAnimator.ofFloat(inhaleBird, "translationX", Resources.getSystem().getDisplayMetrics().widthPixels-inhaleBird.getWidth());
         birdAnimator.setDuration(4000);
-//        birdAnimator.setRepeatMode(ValueAnimator.REVERSE);
-//        birdAnimator.setRepeatCount(1);
         birdAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                if(totalData==3 || totalData==9 || totalData==15){
+                    play_hold_breath();
+                }
 //                inhaleBird.setVisibility(View.VISIBLE);
-                System.out.println("Completed..");
+                System.out.println("L to R Animation Completed..");
                 /*if(inhale_exhale_count<6) {
                     if(isRecording) {
                         mediaRecorder.stop();
@@ -258,23 +319,15 @@ public class RecordActivity extends AppCompatActivity {
                     }
                     play_exhale();
 
+
                 }*/
                 if(inhale_exhale_count>=6)
                     finishActivityCounter();
 
             }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                super.onAnimationRepeat(animation);
-                Glide.with(getApplicationContext())
-                        .load(R.drawable.right_to_keft_bird)
-                        .into(inhaleBird);
-            }
-
         });
 
-        breathCircleText.setText("শ্বাস নিন");
+        breathCircleText.setText("আস্তে আস্তে শ্বাস নিন");
 
         birdAnimator.start();
     }
@@ -294,7 +347,10 @@ public class RecordActivity extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
 //                inhaleBird.setVisibility(View.VISIBLE);
-                System.out.println("Completed..");
+                if(totalData==5 || totalData==11){
+                    play_calm_down();
+                }
+                System.out.println("R To L Completed..");
                 /*if(inhale_exhale_count<6) {
                     if(isRecording) {
                         mediaRecorder.stop();
@@ -310,10 +366,12 @@ public class RecordActivity extends AppCompatActivity {
 
         });
 
-        breathCircleText.setText("শ্বাস ছাড়ুন");
+        breathCircleText.setText("আস্তে আস্তে শ্বাস ছাড়ুন");
 
         birdAnimator.start();
     }
+
+
 
 
     void startFourSecondTimer() {
@@ -357,13 +415,14 @@ public class RecordActivity extends AppCompatActivity {
                     mediaRecorder.stop();
                     isRecording = false;
                 }
-                if(inhale_exhale_count<6) {
-                    if (inhale_exhale_count % 2 == 0) {
-                        play_inhale();
-                    } else {
-                        play_exhale();
-                    }
-                }
+//                if(inhale_exhale_count<6) {
+//                    if (inhale_exhale_count % 2 == 0) {
+//                        play_inhale();
+//                    } else {
+//                        play_exhale();
+//                    }
+//                }
+
             }
         };
         cTimer.start();
@@ -379,21 +438,50 @@ public class RecordActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 mediaPlayer.stop();
                 mediaPlayer.reset();
-                if(inhale_exhale_count%2==0) {
+                if(totalData==1 || totalData==7 || totalData==13){
+                    //completed ready word..
+                    play_inhale();
+                }
+                else if(totalData==2 || totalData==8 || totalData==14){
+                    start_recording();
+                    startFourSecondTimer();
                     animateBirdLtR();
+                    inhale_exhale_count++;
                 }
-                else {
+                else if(totalData==3 || totalData==9 || totalData==15){
+                    play_exhale();
+//                    inhale_exhale_count++;
+                }
+                else if(totalData==4 || totalData==10 || totalData==16){
+                    start_recording();
+                    startFourSecondTimer();
                     animateBirdRtL();
+                    inhale_exhale_count++;
                 }
+                else if(totalData==6 || totalData==12){
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    play_ready();
+                }
+//                if(inhale_exhale_count%2==0) {
+//                    animateBirdLtR();
+//                }
+//                else {
+//                    animateBirdRtL();
+//                }
 
+                totalData++;
+//                inhale_exhale_count++;
 
-                inhale_exhale_count++;
-
-                if(inhale_exhale_count<=6)
+                /*if(inhale_exhale_count<=6)
                 {
                     start_recording();
                     startFourSecondTimer();
-                }
+                }*/
 
                 /*if(!mediaPlayer.isPlaying()){
                     init();
@@ -481,8 +569,10 @@ public class RecordActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
+        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+
         List<File> files = new ArrayList<>();
-        for(int i=1; i<=inhale_exhale_count; i++)
+        for(int i=1; i<=inhale_exhale_count+1; i++)
             files.add(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
                 "/breath_record"+i+".mp3"));
         File mergedFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
@@ -512,17 +602,6 @@ public class RecordActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-
-                mediaPlayer.stop();
-                mediaPlayer.release();
-
-                if (isRecording)
-                {
-                    mediaRecorder.stop();
-                    mediaRecorder.release();
-                    mediaRecorder = null;
-                    isRecording = false;
-                }
                 finish();
             }
         };
@@ -531,8 +610,8 @@ public class RecordActivity extends AppCompatActivity {
 
     public void start_recording(){
         audioFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)+
-                "/breath_record"+inhale_exhale_count+".mp3";
-        Toast.makeText(getApplicationContext(), "Count: "+inhale_exhale_count, Toast.LENGTH_LONG).show();
+                "/breath_record"+(inhale_exhale_count+1)+".mp3";
+        Toast.makeText(getApplicationContext(), "Count: "+(inhale_exhale_count+1), Toast.LENGTH_LONG).show();
 
         try {
             mediaRecorder = new MediaRecorder();
