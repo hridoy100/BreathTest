@@ -69,6 +69,18 @@ public class MainActivity extends AppCompatActivity {
         progressBarAnimator = ObjectAnimator.ofInt(progress_bar, "progress", 0, 100);
         progressBarAnimator.setDuration(23000);
         audioSetup();
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        if(!dir.exists()){
+            try{
+                if(dir.mkdir()) {
+                    Toast.makeText(getApplicationContext(),"Directory created", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"Directory is not created", Toast.LENGTH_SHORT).show();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
         storeAudioFiles("inhale",1);
         storeAudioFiles("exhale",2);
         storeAudioFiles("ready",3);
@@ -79,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void storeAudioFiles(String fileName, int in_ex){
+
         try {
             InputStream ins;
             if(in_ex==1) {

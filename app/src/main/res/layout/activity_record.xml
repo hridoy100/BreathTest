@@ -40,11 +40,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             >
             <RelativeLayout
-                android:layout_width="305dp"
-                android:layout_height="305dp"
+                android:layout_width="290dp"
+                android:layout_height="290dp"
                 android:gravity="center"
                 android:id="@+id/circleView"
                 >
@@ -76,30 +76,6 @@
                 android:textColor="@color/colorPrimary"
                 android:id="@+id/countText"
                 />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="60sp"
-                android:textColor="@color/colorPrimary"
-                android:id="@+id/inhale_exhale_text"
-                android:layout_below="@id/countText"
-                android:fontFamily="@font/roboto_bold"
-                android:layout_marginBottom="30dp"
-                />
-
-                <ProgressBar
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:progress="100"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:indeterminateDrawable="@drawable/progress_bar_drawable"
-                    android:id="@+id/inhale_exhale_bar"
-                    android:visibility="invisible"
-                    android:indeterminate="true"
-                    android:indeterminateDuration="4000"
-                    android:layout_below="@id/inhale_exhale_text"
-                    />
                 <ImageView
                     android:layout_width="150dp"
                     android:layout_height="150dp"
@@ -115,10 +91,11 @@
                 android:layout_centerInParent="true"
                 android:text="থামুন"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="30sp"
+                android:textSize="32sp"
                 android:textStyle="bold"
                 android:id="@+id/breath_text_circle"
-                android:layout_below="@+id/inhale_exhale_text"
+                android:layout_below="@+id/bird"
+                android:layout_marginTop="20dp"
                 />
 
 

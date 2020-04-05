@@ -3,9 +3,7 @@ package com.example.breathtest;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Shader;
 import android.view.View;
 
 
@@ -33,7 +31,7 @@ public class CustomView extends View {
         invalidate();
     }
     public void updateColor(int val){
-        paint.setColor(Color.rgb(0, 133+val/2, 119+val/2));
+        paint.setColor(Color.rgb(0, 150+val/2, 119+val));
         invalidate();
     }
 

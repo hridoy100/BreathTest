@@ -17,7 +17,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +36,7 @@ import java.util.List;
 public class RecordActivity extends AppCompatActivity {
 
 
-    int circleRadius = 300;
+    int circleRadius = 285;
     int countColor = 0;
 
     int totalData = 1;
@@ -71,10 +70,6 @@ public class RecordActivity extends AppCompatActivity {
     ObjectAnimator progressAnimator;
     ObjectAnimator birdAnimator;
 
-
-    ProgressBar progressBarAnimation;
-    ProgressBar progressBarAnimation2;
-
     AudioManager audioManager;
     ToneGenerator toneG;
 
@@ -95,13 +90,9 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         count = (TextView) findViewById(R.id.countText);
         topBarLayout = (LinearLayout) findViewById(R.id.topBarLayout);
-        progressBarAnimation = (ProgressBar) findViewById(R.id.inhale_exhale_bar);
 
         breathCircle = (ImageView) findViewById(R.id.breath_img);
         breathCircleText = (TextView) findViewById(R.id.breath_text_circle);
-
-        progressBarAnimation.setVisibility(View.INVISIBLE);
-        inhale_exhale = (TextView) findViewById(R.id.inhale_exhale_text);
 
         animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
         animFadeInLarge = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in_large);
@@ -534,25 +525,6 @@ public class RecordActivity extends AppCompatActivity {
     void cancelTimer() {
         if (cTimer != null)
             cTimer.cancel();
-    }
-
-    public void init(){
-
-        progressAnimator = ObjectAnimator.ofInt(progressBarAnimation, "progress", 0, 100);
-        progressAnimator.setDuration(4000);
-        progressAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-//                progressAnimator.setRepeatMode(ValueAnimator.REVERSE);
-                progressBarAnimation.setVisibility(View.INVISIBLE);
-                inhale_exhale.setText("Done!");
-                inhale_exhale.startAnimation(animFadeIn);
-//                breathImage.setVisibility(View.INVISIBLE);
-                finishActivityCounter();
-            }
-        });
-        animationTimer();
     }
 
     void finishActivityCounter() {
